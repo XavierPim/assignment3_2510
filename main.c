@@ -78,6 +78,49 @@ void loadFile(Node** head , FILE* fp) {
 
 }
 
+void compaction(Node** head) {
+    Node* current = *head;
+    Node* hole = NULL;
+    Node* newHole = NULL;
+
+    int base;
+    int limitCount = 0;
+
+    int pBase;
+    int pLimit;
+
+    while (current != NULL) {
+        if (current->next->identifier[0] == 'H') {
+            hole = current->next;
+            base = hole->base;
+            limitCount += hole->limit;
+
+            while (hole->next->identifier[0] == 'H') {
+                hole = hole->next;
+                limitCount += hole->limit;
+
+
+            }
+
+            current->next = hole->next;
+            current->next->base = base;
+
+            current = current->next; // Goes to the next from process to process skipping holes
+
+            pBase = current->base;
+            pLimit = current->limit;
+
+            newHole->base = pBase + pLimit;
+            newHole->limit = limitCount;
+
+
+
+        } else {
+            current = current->next;
+        }
+    }
+}
+
 void mergeHoles(Node** head) {
     Node* current = *head;
     Node* hole = NULL;
@@ -201,7 +244,7 @@ void frontBackSplit(Node* source, Node** frontRef, Node** backRef) {
     slow->next = NULL;
 }
 
-void mergeSort(Node** headRef) {
+void mergeFreeBlocks(Node** headRef) {
     Node* head = *headRef;
     Node* a;
     Node* b;
@@ -212,8 +255,8 @@ void mergeSort(Node** headRef) {
 
     frontBackSplit(head, &a, &b);
 
-    mergeSort(&a);
-    mergeSort(&b);
+    mergeFreeBlocks(&a);
+    mergeFreeBlocks(&b);
 
     *headRef = sortedMerge(a, b);
 
@@ -227,15 +270,15 @@ int main() {
         printPrompts();
 
         scanf("%s", input);
-        int choice = atoi(input);
+        int option = atoi(input);
 
-        switch (choice) {
+        switch (option) {
             case 1:
                 printf("1. Type the file name: ");
                 scanf("%s", input);
                 FILE *fp = fopen(input, "r");
                 loadFile(&head, fp);
-                mergeSort(&head);
+                mergeFreeBlocks(&head);
                 printf("operation successful\n");
                 break;
             case 2:
@@ -253,7 +296,7 @@ int main() {
             case 5:
                 return 0;
             default:
-                printf("Invalid choice\n");
+                printf("Invalid option\n");
                 continue;
         }
     }
