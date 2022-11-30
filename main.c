@@ -78,49 +78,6 @@ void loadFile(Node** head , FILE* fp) {
 
 }
 
-void compaction(Node** head) {
-    Node* current = *head;
-    Node* hole = NULL;
-    Node* newHole = NULL;
-
-    int base;
-    int limitCount = 0;
-
-    int pBase;
-    int pLimit;
-
-    while (current != NULL) {
-        if (current->next->identifier[0] == 'H') {
-            hole = current->next;
-            base = hole->base;
-            limitCount += hole->limit;
-
-            while (hole->next->identifier[0] == 'H') {
-                hole = hole->next;
-                limitCount += hole->limit;
-
-
-            }
-
-            current->next = hole->next;
-            current->next->base = base;
-
-            current = current->next; // Goes to the next from process to process skipping holes
-
-            pBase = current->base;
-            pLimit = current->limit;
-
-            newHole->base = pBase + pLimit;
-            newHole->limit = limitCount;
-
-
-
-        } else {
-            current = current->next;
-        }
-    }
-}
-
 void mergeHoles(Node** head) {
     Node* current = *head;
     Node* hole = NULL;
