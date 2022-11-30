@@ -4,7 +4,7 @@
 #include <stdbool.h>
 /**
  * File: main.c
- * Author1:Patrick
+ * Author1:Patrick Cammayo A01278747
  * Author2:Ian Guano A01166459
  * Author3:Usman Arshad A00987350
  * Author4:Xavier Pimentel A00697839
