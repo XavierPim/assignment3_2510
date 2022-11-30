@@ -119,7 +119,7 @@ void compaction (Node** head) {
     Node *current = *head;
     Node *hole = NULL;
 
-    int limitCount;
+    int limitCount; 
 
     while (current != NULL) {
 
@@ -127,8 +127,15 @@ void compaction (Node** head) {
             if (current->next->identifier[0] == 'H') {
                 hole = current->next;
                 limitCount += hole->limit;
-                current->next = hole->next;
-                current->next->base = current->base + current->limit;
+
+                if (hole->next != NULL) {
+                    current->next = hole->next;
+                    current->next->base = current->base + current->limit;
+                } else {
+                    hole->base = current->base + current->limit;
+                    hole->limit = limitCount;
+                    break;
+                }
             } 
         } else {
             hole->base = current->base + current->limit;
