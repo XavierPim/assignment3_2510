@@ -113,6 +113,34 @@ void mergeHoles(Node** head) {
 
 }
 
+void compaction (Node** head) {
+    // mergeHoles(head);
+
+    Node *current = *head;
+    Node *hole = NULL;
+
+    int limitCount;
+
+    while (current != NULL) {
+
+        if (current->next != NULL) {
+            if (current->next->identifier[0] == 'H') {
+                hole = current->next;
+                limitCount += hole->limit;
+                current->next = hole->next;
+                current->next->base = current->base + current->limit;
+            } 
+        } else {
+            hole->base = current->base + current->limit;
+            hole->limit = limitCount;
+            current->next = hole;
+            hole->next = NULL;
+            break;
+        }
+        current = current->next;
+    }
+}
+
 int compareValues(Node* d1, Node* d2) {
     int value1 = d1->base + d1->limit;
     int value2 = d2->base + d2->limit;
@@ -215,6 +243,8 @@ int main() {
                 printf("operation successful\n");
                 break;
             case 3:
+                compaction(&head);
+                printf("operation successful\n");
                 break;
             case 4:
                 printMemoryView(&head);
