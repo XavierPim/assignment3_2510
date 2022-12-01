@@ -36,13 +36,78 @@
  *   4:print the current sorted linked list
  *
  */
+
 typedef struct Node {
     char* identifier;
     int base;
     int limit;
     struct Node* next;
 } Node;
+void printPrompts();
+void printMemoryView(Node** head);
+void createNode(Node** head, FILE* fp);
+void loadFile(Node** head , FILE* fp);
+void mergeHoles(Node** head);
+void compaction(Node** head);
+void frontBackSplit(Node* source, Node** frontRef, Node** backRef);
+void mergeFreeBlocks(Node** headRef);
+void checkOverlap(Node* current, Node* next);
+/**
+* int main()
+* Summary of main function:
+*
+*         Drives the program. Takes in user input and prompts user between 5 options.
+*
+*          Parameters:Nothing
+*
+*          Return value:
+*          A sorted linked list depending on user input
+*
+*   Description:
+*
+*        A user can pass in an input file then sorted based on ascending bases.
+ *       A user can sort and merge holes in the linked list
+ *       A user can sort and merge holes then push the combined holes to the end of the list.
+*/
+int main() {
+    char input[50];
+    Node* head = NULL;
 
+    while (true) {
+        printPrompts();
+
+        scanf("%s", input);
+        int option = atoi(input);
+
+        switch (option) {
+            case 1:
+                printf("1. Type the file name: ");
+                scanf("%s", input);
+                FILE *fp = fopen(input, "r");
+                loadFile(&head, fp);
+                mergeFreeBlocks(&head);
+                printf("operation successful\n");
+                break;
+            case 2:
+                mergeHoles(&head);
+                printf("operation successful\n");
+                break;
+            case 3:
+                compaction(&head);
+                printf("operation successful\n");
+                break;
+            case 4:
+                printMemoryView(&head);
+                printf("operation successful\n");
+                break;
+            case 5:
+                return 0;
+            default:
+                printf("Invalid option\n");
+                continue;
+        }
+    }
+}
 /**
  * void printPrompts()
  * Summary of printPrompts function:
@@ -83,7 +148,6 @@ void printMemoryView(Node** head) {
         printf("%s %d %d\n", current->identifier, current->base, current->limit);
         current = current->next;
     }
-
 }
 
 
@@ -114,6 +178,7 @@ void createNode(Node** head, FILE* fp) {
     int limit;
 
     sscanf(line, "%s %d %d", identifier, &base, &limit);
+
 
     newNode->identifier = malloc(sizeof(char) * strlen(identifier) + 1);
     strcpy(newNode->identifier, identifier);
@@ -200,8 +265,7 @@ void mergeHoles(Node** head) {
                 hole->next = current->next;
                 hole->limit = limitCount;
                 current = current->next;
-            } else
-            {
+            } else {
                 return;
             }
         } else {
@@ -402,59 +466,10 @@ void mergeFreeBlocks(Node** headRef) {
 
 }
 
-/**
-* int main()
-* Summary of main function:
-*
-*         Drives the program. Takes in user input and prompts user between 5 options.
-*
-*          Parameters:Nothing
-*
-*          Return value:
-*          A sorted linked list depending on user input
-*
-*   Description:
-*
-*        A user can pass in an input file then sorted based on ascending bases.
- *       A user can sort and merge holes in the linked list
- *       A user can sort and merge holes then push the combined holes to the end of the list.
-*/
-int main() {
-    char input[50];
-    Node* head = NULL;
 
-    while (true) {
-        printPrompts();
-
-        scanf("%s", input);
-        int option = atoi(input);
-
-        switch (option) {
-            case 1:
-                printf("1. Type the file name: ");
-                scanf("%s", input);
-                FILE *fp = fopen(input, "r");
-                loadFile(&head, fp);
-                mergeFreeBlocks(&head);
-                printf("operation successful\n");
-                break;
-            case 2:
-                mergeHoles(&head);
-                printf("operation successful\n");
-                break;
-            case 3:
-                compaction(&head);
-                printf("operation successful\n");
-                break;
-            case 4:
-                printMemoryView(&head);
-                printf("operation successful\n");
-                break;
-            case 5:
-                return 0;
-            default:
-                printf("Invalid option\n");
-                continue;
-        }
-    }
-}
+//void checkOverlap(Node* current, Node* next){
+//    if (current->base + current->limit <= next->next->base) {//edge case for overlapping basses
+//        printf("Overlapping Bases\nCheck input file and rerun program");
+//        exit(1);
+//    }
+//}
