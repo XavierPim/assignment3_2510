@@ -145,7 +145,7 @@ int main() {
  *          This function prints the choices for the user prompts.
  */
 void printPrompts() {
-    printf("1. load an input file\n");
+    printf("\n1. load an input file\n");
     printf("2. merge holes\n");
     printf("3. compact memory\n");
     printf("4. print memory view\n");
@@ -167,9 +167,15 @@ void printPrompts() {
 void printMemoryView(Node** head) {
     Node* current = *head;
     printf("\nCurrent List:\n");
+    int i = 1;
     while (current != NULL) {
-        printf("Node: ");
-        printf("%s %d %d\n", current->identifier, current->base, current->limit);
+        printf("Node %d: ", i);
+        i++;
+        if(current->identifier[0] == 'H'){
+          printf("%s (Hole), base = %d, limit = %d\n", current->identifier, current->base, current->limit);
+        } else {
+          printf("%s, base = %d, limit = %d\n", current->identifier, current->base, current->limit);
+        }
         current = current->next;
     }
 }
@@ -352,6 +358,7 @@ void mergeHoles(Node** head) {
                     current = current->next;
                     limitCount += current->limit;
                 }
+
             }
             if (current->next != NULL)
             {
@@ -383,7 +390,6 @@ void mergeHoles(Node** head) {
  *        The combined holes are pushed to the back of the linked list.
 */
 void compaction(Node** head) {
-    // mergeHoles(head);
 
     Node *current = *head;
     Node *hole = NULL;
@@ -400,18 +406,22 @@ void compaction(Node** head) {
                 if (hole->next != NULL) {
                     current->next = hole->next;
                     current->next->base = current->base + current->limit;
+                    free(hole);
                 } else {
                     hole->base = current->base + current->limit;
                     hole->limit = limitCount;
-                    break;
+                    return;
                 }
             }
-        } else {
+        } else if (current->next == NULL && hole != NULL) {
+            hole->identifier[0] = 'H';
             hole->base = current->base + current->limit;
             hole->limit = limitCount;
             current->next = hole;
             hole->next = NULL;
-            break;
+            return;
+        } else {
+          return;
         }
         current = current->next;
     }
