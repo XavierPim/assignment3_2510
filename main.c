@@ -174,6 +174,22 @@ void printMemoryView(Node** head) {
     }
 }
 
+/**
+ * testMemoryView(Node** head)
+ * Summary of testMemoryView function:
+ *
+ *          This method prints the prints a secondary ordered linked list and checks if there are overlaps in bases
+ *
+ *          Parameters: typedef Node double pointer
+ *          return value: if there is an overlap between nodes, then it will return the line number of the error on file.
+ *          returns 1 if no overlap
+ *          returns -1 if overlap is present
+ *
+ *    Description:
+ *
+ *          This method prints the a sorted linked list checks if any of the nodes either overlap or create empty blocks.
+ *
+ */
 int testMemoryView(Node** head) {
     Node* current = *head;
 
@@ -203,6 +219,22 @@ int testMemoryView(Node** head) {
 
 }
 
+
+/**
+ * void checkOverlap(Node* current, Node* nextNode)
+ * Summary of checkOverlap function:
+ *
+ *          This method checks if 2 nodes overlap or create empty blocks in between them.
+ *
+ *          Parameters: Node* current, Node* nextNode
+ *          return value: if there is an overlap between nodes, then it will return the line number of the error on file.
+ *          returns 1 if no overlap
+ *          returns -1 if overlap is present
+ *
+ *    Description:
+ *
+ *          This method checks the sorted test linked list has either an overlap present or an empty space.
+ */
 int checkOverlap(Node* current, Node* nextNode){
     if (current->base + current->limit != nextNode->base) {//edge case for overlapping basses
         printf("Error: Overlapping Bases or invalid empty memory slot\n");
