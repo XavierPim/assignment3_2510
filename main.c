@@ -108,19 +108,19 @@ int main() {
 
                 loadFile(&head, fp);
                 mergeFreeBlocks(&head);
-                printf("operation successful\n");
+                printf("\noperation successful\n");
                 break;
             case 2:
                 mergeHoles(&head);
-                printf("operation successful\n");
+                printf("\noperation successful\n");
                 break;
             case 3:
                 compaction(&head);
-                printf("operation successful\n");
+                printf("\noperation successful\n");
                 break;
             case 4:
 //                printMemoryView(&test);
-                printf("operation successful\n");
+                printf("\noperation successful\n");
                 printMemoryView(&head);
                 printf("operation successful\n");
                 break;
@@ -166,7 +166,7 @@ void printPrompts() {
  */
 void printMemoryView(Node** head) {
     Node* current = *head;
-
+    printf("\nCurrent List:\n");
     while (current != NULL) {
         printf("Node: ");
         printf("%s %d %d\n", current->identifier, current->base, current->limit);
@@ -203,8 +203,8 @@ int testMemoryView(Node** head) {
 
     while (current != NULL) {
         if (checkOverlap(current, nextNode) == 1) {
-            printf("Node %d: ", i);
-            printf("%s %d %d\n", current->identifier, current->base, current->limit);
+//            printf("Node %d: ", i);
+//            printf("%s %d %d\n", current->identifier, current->base, current->limit);
             current = current->next;
             if (current->next == NULL) {
                 return 1;
