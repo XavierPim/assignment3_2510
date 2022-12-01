@@ -29,7 +29,7 @@
  *
  *
  *   Description:
- *   This function takes in a input file and creates a linked list from each new line in the passed file.
+ *   This program takes in a input file and creates a linked list from each new line in the passed file.
  *   The user can choose to use
  *   2:merge sort the current linked list and order them based on ascending Base value while combining the holes
  *   3:combine the holes and push them to the last node
@@ -43,6 +43,7 @@ typedef struct Node {
     int limit;
     struct Node* next;
 } Node;
+
 void printPrompts();
 void printMemoryView(Node** head);
 void createNode(Node** head, FILE* fp);
@@ -51,7 +52,8 @@ void mergeHoles(Node** head);
 void compaction(Node** head);
 void frontBackSplit(Node* source, Node** frontRef, Node** backRef);
 void mergeFreeBlocks(Node** headRef);
-void checkOverlap(Node* current, Node* next);
+int testMemoryView(Node** test);
+int checkOverlap(Node* current, Node* nextNode);
 /**
 * int main()
 * Summary of main function:
@@ -72,6 +74,8 @@ void checkOverlap(Node* current, Node* next);
 int main() {
     char input[50];
     Node* head = NULL;
+    Node* test = NULL;
+    FILE *fp;
 
     while (true) {
         printPrompts();
@@ -83,7 +87,25 @@ int main() {
             case 1:
                 printf("1. Type the file name: ");
                 scanf("%s", input);
-                FILE *fp = fopen(input, "r");
+
+                if (fopen(input, "r") == NULL) {
+                    printf("Error: Entered invalid file name\n");
+                    continue;
+                }
+
+                fp = fopen(input, "r");
+
+                loadFile(&test, fp);
+                mergeFreeBlocks(&test);
+
+                if (testMemoryView(&test) == -1) {
+                    test = NULL;
+                    head = NULL;
+                    continue;
+                }
+
+                rewind(fp);
+
                 loadFile(&head, fp);
                 mergeFreeBlocks(&head);
                 printf("operation successful\n");
@@ -97,6 +119,8 @@ int main() {
                 printf("operation successful\n");
                 break;
             case 4:
+//                printMemoryView(&test);
+                printf("operation successful\n");
                 printMemoryView(&head);
                 printf("operation successful\n");
                 break;
@@ -150,6 +174,44 @@ void printMemoryView(Node** head) {
     }
 }
 
+int testMemoryView(Node** head) {
+    Node* current = *head;
+
+    if (current->next == NULL) {
+        return 1;
+    }
+
+    Node* nextNode = current->next;
+
+    int i = 1;
+
+    while (current != NULL) {
+        if (checkOverlap(current, nextNode) == 1) {
+            printf("Node %d: ", i);
+            printf("%s %d %d\n", current->identifier, current->base, current->limit);
+            current = current->next;
+            if (current->next == NULL) {
+                return 1;
+            }
+            nextNode = current->next;
+            i++;
+        } else {
+            printf("Overlapping memory at line %d\n", i + 1);
+            return -1;
+        }
+    }
+
+}
+
+int checkOverlap(Node* current, Node* nextNode){
+    if (current->base + current->limit != nextNode->base) {//edge case for overlapping basses
+        printf("Error: Overlapping Bases or invalid empty memory slot\n");
+        return -1;
+    }
+    return 1;
+}
+
+
 
 /**
  * void createNode(Node** head, FILE* fp)
@@ -178,7 +240,6 @@ void createNode(Node** head, FILE* fp) {
     int limit;
 
     sscanf(line, "%s %d %d", identifier, &base, &limit);
-
 
     newNode->identifier = malloc(sizeof(char) * strlen(identifier) + 1);
     strcpy(newNode->identifier, identifier);
@@ -295,12 +356,12 @@ void compaction(Node** head) {
     Node *current = *head;
     Node *hole = NULL;
 
-    int limitCount; 
+    int limitCount;
 
     while (current != NULL) {
 
         if (current->next != NULL) {
-            if (current->next->identifier[0] == 'H') {
+            while (current->next->identifier[0] == 'H') {
                 hole = current->next;
                 limitCount += hole->limit;
 
@@ -312,7 +373,7 @@ void compaction(Node** head) {
                     hole->limit = limitCount;
                     break;
                 }
-            } 
+            }
         } else {
             hole->base = current->base + current->limit;
             hole->limit = limitCount;
@@ -466,10 +527,3 @@ void mergeFreeBlocks(Node** headRef) {
 
 }
 
-
-//void checkOverlap(Node* current, Node* next){
-//    if (current->base + current->limit <= next->next->base) {//edge case for overlapping basses
-//        printf("Overlapping Bases\nCheck input file and rerun program");
-//        exit(1);
-//    }
-//}
