@@ -213,25 +213,28 @@ int testMemoryView(Node** head) {
     }
 
     Node* nextNode = current->next;
+    if(current->limit >= 0) {
+        int i = 1;
 
-    int i = 1;
-
-    while (current != NULL) {
-        if (checkOverlap(current, nextNode) == 1) {
+        while (current != NULL) {
+            if (checkOverlap(current, nextNode) == 1) {
 //            printf("Node %d: ", i);
 //            printf("%s %d %d\n", current->identifier, current->base, current->limit);
-            current = current->next;
-            if (current->next == NULL) {
-                return 1;
+                current = current->next;
+                if (current->next == NULL) {
+                    return 1;
+                }
+                nextNode = current->next;
+                i++;
+            } else {
+                printf("Error found after line %d\n", i + 1);
+                return -1;
             }
-            nextNode = current->next;
-            i++;
-        } else {
-            printf("Error found after line %d\n", i + 1);
-            return -1;
         }
+    } else {
+        printf("Error head node limit is negative\n");
+        return -1;
     }
-
 }
 
 
