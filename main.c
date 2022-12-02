@@ -343,6 +343,7 @@ void loadFile(Node** head , FILE* fp) {
 void mergeHoles(Node** head) {
     Node* current = *head;
     Node* hole = NULL;
+    Node* freeHole = NULL;
 
     int limitCount;
 
@@ -357,14 +358,23 @@ void mergeHoles(Node** head) {
                 {
                     current = current->next;
                     limitCount += current->limit;
+
+                    freeHole = current;
+
+                    if (current->next == NULL)
+                    {
+                        hole->next = current->next;
+                        hole->limit = limitCount;
+                        return;
+                    }
+
                 }
 
-            }
-            if (current->next != NULL)
-            {
                 hole->next = current->next;
                 hole->limit = limitCount;
                 current = current->next;
+
+                free(freeHole);
             } else {
                 return;
             }
@@ -372,7 +382,6 @@ void mergeHoles(Node** head) {
             current = current->next;
         }
     }
-
 }
 
 /**
