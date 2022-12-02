@@ -104,8 +104,6 @@ int main() {
                 loadFile(&test, fp);
                 mergeFreeBlocks(&test);
 
-
-
                 if (testMemoryView(&test) == -1) {
                     test = NULL;
                     head = NULL;
@@ -130,7 +128,6 @@ int main() {
 //                printMemoryView(&test);
                 printf("\noperation successful\n");
                 printMemoryView(&head);
-                printf("%d", head->base);
                 printf("operation successful\n");
                 break;
             case 5:
@@ -180,7 +177,7 @@ void printMemoryView(Node** head) {
     while (current != NULL) {
         printf("Node %d: ", i);
         i++;
-        if(current->identifier[0] == 'H'){
+        if(current->identifier[0] == 'H') {
           printf("%s (Hole), base = %d, limit = %d\n", current->identifier, current->base, current->limit);
         } else {
           printf("%s, base = %d, limit = %d\n", current->identifier, current->base, current->limit);
