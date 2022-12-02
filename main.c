@@ -76,6 +76,7 @@ int main() {
     Node* head = NULL;
     Node* test = NULL;
     FILE *fp;
+    int inputBoolean = 0;
 
     while (true) {
         printPrompts();
@@ -85,6 +86,10 @@ int main() {
 
         switch (option) {
             case 1:
+                if(inputBoolean == 1){
+                  printf("Input file already loaded. Please exit to load new file.");
+                  break;
+                }
                 printf("1. Type the file name: ");
                 scanf("%s", input);
 
@@ -93,10 +98,13 @@ int main() {
                     continue;
                 }
 
+                inputBoolean = 1;
                 fp = fopen(input, "r");
 
                 loadFile(&test, fp);
                 mergeFreeBlocks(&test);
+
+
 
                 if (testMemoryView(&test) == -1) {
                     test = NULL;
