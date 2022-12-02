@@ -130,6 +130,7 @@ int main() {
 //                printMemoryView(&test);
                 printf("\noperation successful\n");
                 printMemoryView(&head);
+                printf("%d", head->base);
                 printf("operation successful\n");
                 break;
             case 5:
@@ -226,7 +227,7 @@ int testMemoryView(Node** head) {
             nextNode = current->next;
             i++;
         } else {
-            printf("Overlapping memory at line %d\n", i + 1);
+            printf("Error found after line %d\n", i + 1);
             return -1;
         }
     }
@@ -250,10 +251,13 @@ int testMemoryView(Node** head) {
  *          This method checks the sorted test linked list has either an overlap present or an empty space.
  */
 int checkOverlap(Node* current, Node* nextNode){
-    if (current->base + current->limit != nextNode->base) {//edge case for overlapping basses
-        printf("Error: Overlapping Bases or invalid empty memory slot\n");
+    if(nextNode->limit < 0 && current->base + current->limit != nextNode->base) {
+        printf("Error: limit is negative\n");
         return -1;
-    }
+    } else if (nextNode->limit >= 0  && current->base + current->limit != nextNode->base ) {
+            printf("Error: Overlapping Bases or invalid empty memory slot\n");
+            return -1;
+        }
     return 1;
 }
 
